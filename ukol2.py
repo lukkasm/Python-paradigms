@@ -1,37 +1,39 @@
-from omw import *
+import micro_widget as mw
 
-def make_matrix_entry_field(row, col):
-    label = Label().set_text(f"Element [{row + 1}, {col + 1}]:")
-    entry = Entry().move(0, 20)
-    return Group().set_items([label, entry])
+def check_password_match():
+    heslo1 = mw.get_entry_text(entry_heslo)
+    heslo2 = mw.get_entry_text(entry_heslo2)
+    
+    if heslo1 == heslo2:
+        mw.set_label_text(label_shoda_hesel, "Hesla se shodují.")
+    else:
+        mw.set_label_text(label_shoda_hesel, "Hesla se neshodují.")
 
-def make_matrix_form(rows, cols):
-    matrix_entries = [make_matrix_entry_field(i, j).move(j * 150, i * 50) for i in range(rows) for j in range(cols)]
-    return Group().set_items(matrix_entries)
+w = mw.display_window()
 
-def get_matrix_data(form, rows, cols):
-    items = form.get_items()
-    matrix_data = [[get_entry_field_value(items[i * cols + j]) for j in range(cols)] for i in range(rows)]
-    return matrix_data
+label_heslo = mw.make_label(w)
+mw.set_label_text(label_heslo, "Zadejte heslo:")
+mw.set_widget_x(label_heslo, 20)
+mw.set_widget_y(label_heslo, 10)
 
-# Okno
-window = Window()
+entry_heslo = mw.make_entry(w)
+mw.set_widget_x(entry_heslo, 20)
+mw.set_widget_y(entry_heslo, 30)
+mw.set_entry_command(entry_heslo, check_password_match)
 
-# Formulář pro zadávání matice
-matrix_form = make_matrix_form(2, 3).move(20, 20)
-window.set_widget(matrix_form)
+label_heslo2 = mw.make_label(w)
+mw.set_label_text(label_heslo2, "Znovu zadejte heslo:")
+mw.set_widget_x(label_heslo2, 20)
+mw.set_widget_y(label_heslo2, 60)
 
-# Tlačítko pro získání dat
-get_matrix_button = Button().set_text("Get Matrix").move(0, 200)
-get_matrix_button.set_delegate(window)
+entry_heslo2 = mw.make_entry(w)
+mw.set_widget_x(entry_heslo2, 20)
+mw.set_widget_y(entry_heslo2, 80)
+mw.set_entry_command(entry_heslo2, check_password_match)
 
-# Přidání události pro tlačítko
-def button_clicked(sender):
-    matrix_data = get_matrix_data(matrix_form, 2, 3)
-    print(matrix_data)
+label_shoda_hesel = mw.make_label(w)
+mw.set_label_text(label_shoda_hesel, "")
+mw.set_widget_x(label_shoda_hesel, 20)
+mw.set_widget_y(label_shoda_hesel, 100)
 
-get_matrix_button.set_delegate(window)
-get_matrix_button.send_event("ev_button_clicked", get_matrix_button)
-get_matrix_button.set_delegate(None)
-
-window.main_loop()
+mw.main_loop(w)
